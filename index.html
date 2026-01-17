@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>The King Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+}
+header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:15px;
+  background:#111;
+}
+header img{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+}
+header h1{
+  font-size:20px;
+  margin:0;
+}
+.banner{
+  width:100%;
+  max-height:160px;
+  object-fit:cover;
+}
+.container{padding:15px;}
+.card{
+  background:#111;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:15px;
+}
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  margin-top:8px;
+  cursor:pointer;
+}
+.canva{background:#00c4cc;color:#000;}
+.capcut{background:#1abc9c;color:#000;}
+.wa{background:#25D366;color:#000;}
+.disable{background:#555;color:#aaa;}
+.admin-btn{background:#f39c12;color:#000;}
+.note{text-align:center;font-size:13px;color:#ccc;}
+.overlay{
+  display:none;position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,.85);
+  justify-content:center;align-items:center;
+  z-index:99;
+}
+.box{
+  background:#111;padding:20px;border-radius:12px;
+  width:90%;max-width:360px;
+}
+input{
+  width:100%;padding:10px;margin-top:8px;
+  border-radius:6px;border:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img id="logo" src="">
+  <h1>THE KING STORE</h1>
+</header>
+
+<img id="banner" class="banner" src="">
+
+<div class="container">
+
+  <div class="card">
+    <h3>Template Canva</h3>
+    <button class="canva" onclick="openPopup('canva')">Lihat Template</button>
+  </div>
+
+  <div class="card">
+    <h3>Template CapCut</h3>
+    <button class="capcut" onclick="openPopup('capcut')">Lihat Template</button>
+  </div>
+
+  <div class="card">
+    <h3>Top Up Robux</h3>
+    <button class="disable">COMING SOON</button>
+  </div>
+
+  <div class="card">
+    <p class="note">Bisa tanya ke admin kalau kurang jelas</p>
+    <button class="wa" onclick="chatAdmin()">Chat Admin</button>
+  </div>
+
+  <button class="admin-btn" onclick="openLogin()">Admin Panel</button>
+</div>
+
+<!-- POPUP -->
+<div class="overlay" id="templatePop">
+  <div class="box">
+    <h3 id="popTitle"></h3>
+    <button class="canva" onclick="goLink('king')">King</button>
+    <button class="canva" onclick="goLink('mas')">Masgabut</button>
+    <button class="disable" onclick="closeAll()">Tutup</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="overlay" id="loginPop">
+  <div class="box">
+    <h3>Login Admin</h3>
+    <input type="password" id="adminPass" placeholder="Password">
+    <button class="admin-btn" onclick="login()">Masuk</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="overlay" id="adminPop">
+  <div class="box">
+    <h3>Admin Panel</h3>
+    <input id="logoLink" placeholder="Link Logo">
+    <input id="bannerLink" placeholder="Link Banner">
+    <input id="canvaKing" placeholder="Canva King (lynk.id)">
+    <input id="canvaMas" placeholder="Canva Masgabut (lynk.id)">
+    <input id="capcutKing" placeholder="CapCut King (link CapCut)">
+    <input id="capcutMas" placeholder="CapCut Masgabut (link CapCut)">
+    <input id="waAdmin" placeholder="Nomor WA Admin (628xxx)">
+    <button class="admin-btn" onclick="save()">Simpan & Keluar</button>
+  </div>
+</div>
+
+<script>
+let mode="";
+let data=JSON.parse(localStorage.getItem("links")||"{}");
+
+function loadMedia(){
+  if(data.logo) logo.src=data.logo;
+  if(data.banner) banner.src=data.banner;
+}
+loadMedia();
+
+function closeAll(){document.querySelectorAll(".overlay").forEach(o=>o.style.display="none");}
+function openPopup(type){
+  mode=type;
+  popTitle.innerText=type==="canva"?"Template Canva":"Template CapCut";
+  templatePop.style.display="flex";
+}
+function goLink(who){
+  let key=mode+who;
+  if(!data[key]) return alert("Link belum diatur admin");
+  location.href=data[key];
+}
+function chatAdmin(){
+  if(!data.waadmin) return alert("Nomor admin belum diatur");
+  location.href="https://wa.me/"+data.waadmin+"?text="+
+    encodeURIComponent("Admin, aku mau nanya karena aku kurang jelas");
+}
+function openLogin(){loginPop.style.display="flex";}
+function login(){
+  if(adminPass.value==="king2014"){
+    closeAll();adminPop.style.display="flex";
+    logoLink.value=data.logo||"";
+    bannerLink.value=data.banner||"";
+    canvaKing.value=data.canvaking||"";
+    canvaMas.value=data.canvamas||"";
+    capcutKing.value=data.capcutking||"";
+    capcutMas.value=data.capcutmas||"";
+    waAdmin.value=data.waadmin||"";
+  }else alert("Password salah");
+}
+function save(){
+  data={
+    logo:logoLink.value,
+    banner:bannerLink.value,
+    canvaking:canvaKing.value,
+    canvamas:canvaMas.value,
+    capcutking:capcutKing.value,
+    capcutmas:capcutMas.value,
+    waadmin:waAdmin.value
+  };
+  localStorage.setItem("links",JSON.stringify(data));
+  location.reload();
+}
+</script>
+
+</body>
+</html>
